@@ -7,6 +7,79 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
+
+    /* Chatbot Styles */
+    #chatbot {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 320px;
+      max-height: 400px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+    }
+    #chatbot-header {
+      background: linear-gradient(to right, #2563eb, #9333ea);
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #chatbot-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    #chatbot-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    #chatbot-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+    }
+    #chatbot-input button {
+      padding: 10px 15px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Floating buttons */
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .floating-whatsapp {
+      bottom: 90px;
+      background: #25d366;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 leading-relaxed">
@@ -15,8 +88,12 @@
   <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-28 md:py-36">
     <div class="container mx-auto flex flex-col md:flex-row items-center px-8 md:px-16">
       <div class="flex-1 text-center md:text-left">
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-6">Hello, I'm <span class="text-yellow-300">Timothy Sasu Kwabena</span></h1>
-        <p class="text-xl md:text-2xl mb-8 opacity-90">Network Engineer | Database Developer | Full Stack Developer</p>
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-6">
+          Hello, I'm <span class="text-yellow-300">Timothy Sasu Kwabena</span>
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 opacity-90">
+          Network Engineer | Database Developer | Full Stack Developer
+        </p>
         <div class="space-x-4">
           <a href="#about" class="bg-white text-blue-600 px-8 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition">ℹ️ About</a>
           <a href="resume.pdf" class="bg-white text-blue-600 px-8 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition">📄 Resume</a>
@@ -73,5 +150,55 @@
   <footer class="bg-gray-800 text-white py-8 text-center">
     <p class="text-lg">© 2025 Nana Qwabena | All Rights Reserved</p>
   </footer>
+
+  <!-- ===== Floating WhatsApp Button ===== -->
+  <a href="https://wa.me/233598324814" target="_blank" class="floating-btn floating-whatsapp">
+    💬
+  </a>
+
+  <!-- ===== Floating Chatbot Button ===== -->
+  <div class="floating-btn" onclick="toggleChatbot()">🤖</div>
+
+  <!-- ===== Chatbot Widget ===== -->
+  <div id="chatbot">
+    <div id="chatbot-header">
+      Chat with Me
+      <button onclick="toggleChatbot()">✖</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input">
+      <input type="text" id="chatbot-text" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatbot = document.getElementById("chatbot");
+    const messages = document.getElementById("chatbot-messages");
+
+    function toggleChatbot() {
+      chatbot.style.display = chatbot.style.display === "flex" ? "none" : "flex";
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("chatbot-text");
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      // User message
+      messages.innerHTML += `<div class="mb-2"><strong>You:</strong> ${msg}</div>`;
+      input.value = "";
+
+      // Simple bot replies
+      let reply = "I'm here to assist you.";
+      if (msg.toLowerCase().includes("hello")) reply = "Hi there! 👋";
+      if (msg.toLowerCase().includes("email")) reply = "📧 You can email me at: nqwabena7@gmail.com";
+      if (msg.toLowerCase().includes("whatsapp")) reply = "💬 Contact me on WhatsApp: +233598324814";
+      if (msg.toLowerCase().includes("resume")) reply = "📄 You can view/download my resume here: resume.pdf";
+
+      messages.innerHTML += `<div class="mb-2 text-blue-600"><strong>Bot:</strong> ${reply}</div>`;
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
 </body>
 </html>
