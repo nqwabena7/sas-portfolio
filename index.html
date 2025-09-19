@@ -14,7 +14,7 @@
       bottom: 90px;
       right: 20px;
       width: 320px;
-      max-height: 400px;
+      max-height: 420px;
       background: white;
       border: 1px solid #ddd;
       border-radius: 12px;
@@ -30,7 +30,18 @@
       padding: 12px;
       font-weight: bold;
       display: flex;
+      align-items: center;
       justify-content: space-between;
+    }
+    #chatbot-header img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 2px solid white;
+    }
+    #chatbot-title {
+      display: flex;
       align-items: center;
     }
     #chatbot-messages {
@@ -162,7 +173,10 @@
   <!-- ===== Chatbot Widget ===== -->
   <div id="chatbot">
     <div id="chatbot-header">
-      Chat with Me
+      <div id="chatbot-title">
+        <img src="me.jpg" alt="Profile">
+        Assistant
+      </div>
       <button onclick="toggleChatbot()">✖</button>
     </div>
     <div id="chatbot-messages"></div>
@@ -189,14 +203,33 @@
       messages.innerHTML += `<div class="mb-2"><strong>You:</strong> ${msg}</div>`;
       input.value = "";
 
-      // Simple bot replies
-      let reply = "I'm here to assist you.";
-      if (msg.toLowerCase().includes("hello")) reply = "Hi there! 👋";
-      if (msg.toLowerCase().includes("email")) reply = "📧 You can email me at: nqwabena7@gmail.com";
-      if (msg.toLowerCase().includes("whatsapp")) reply = "💬 Contact me on WhatsApp: +233598324814";
-      if (msg.toLowerCase().includes("resume")) reply = "📄 You can view/download my resume here: resume.pdf";
+      // Smarter bot replies
+      let reply = "";
+      const lower = msg.toLowerCase();
 
-      messages.innerHTML += `<div class="mb-2 text-blue-600"><strong>Bot:</strong> ${reply}</div>`;
+      if (lower.includes("hello") || lower.includes("hi")) {
+        reply = "👋 Hello! I'm your Assistant. How can I help you today?";
+      }
+      else if (lower.includes("email")) {
+        reply = "📧 You can email me at: <a href='mailto:nqwabena7@gmail.com' class='text-blue-600 underline'>nqwabena7@gmail.com</a>";
+      }
+      else if (lower.includes("resume") || lower.includes("cv")) {
+        reply = "📄 Here is my resume: <a href='resume.pdf' target='_blank' class='text-blue-600 underline'>Download Resume</a>";
+      }
+      else if (lower.includes("project")) {
+        reply = "💻 Some of my projects include: Inventory Management System, Network Diagnostic Tool, and my Portfolio Website.";
+      }
+      else if (lower.includes("service") || lower.includes("offer")) {
+        reply = "⚡ I offer services in Networking, Database Development, and Full Stack Web Development.";
+      }
+      else if (lower.includes("contact")) {
+        reply = "📞 You can contact me via Email or WhatsApp directly from this site.";
+      }
+      else {
+        reply = "🤖 I'm not sure about that, but you can ask me about my Email, Resume, Projects, Services, or Contact info.";
+      }
+
+      messages.innerHTML += `<div class="mb-2 text-blue-600"><strong>Assistant:</strong> ${reply}</div>`;
       messages.scrollTop = messages.scrollHeight;
     }
   </script>
