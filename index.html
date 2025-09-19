@@ -7,90 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
-
-    /* Chatbot Styles */
-    #chatbot {
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 320px;
-      max-height: 420px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 999;
-    }
-    #chatbot-header {
-      background: linear-gradient(to right, #2563eb, #9333ea);
-      color: white;
-      padding: 12px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    #chatbot-header img {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      margin-right: 8px;
-      border: 2px solid white;
-    }
-    #chatbot-title {
-      display: flex;
-      align-items: center;
-    }
-    #chatbot-messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-    #chatbot-input {
-      display: flex;
-      border-top: 1px solid #ddd;
-    }
-    #chatbot-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-    }
-    #chatbot-input button {
-      padding: 10px 15px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    /* Floating buttons */
-    .floating-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #2563eb;
-      color: white;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-      z-index: 999;
-    }
-    .floating-whatsapp {
-      bottom: 90px;
-      background: #25d366;
-    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 leading-relaxed">
@@ -162,76 +78,101 @@
     <p class="text-lg">© 2025 Nana Qwabena | All Rights Reserved</p>
   </footer>
 
-  <!-- ===== Floating WhatsApp Button ===== -->
-  <a href="https://wa.me/233598324814" target="_blank" class="floating-btn floating-whatsapp">
-    💬
-  </a>
-
-  <!-- ===== Floating Chatbot Button ===== -->
-  <div class="floating-btn" onclick="toggleChatbot()">🤖</div>
-
   <!-- ===== Chatbot Widget ===== -->
-  <div id="chatbot">
-    <div id="chatbot-header">
-      <div id="chatbot-title">
-        <img src="me.jpg" alt="Profile">
-        Assistant
+  <div id="chatbot" class="fixed bottom-6 right-6 w-80 bg-white shadow-2xl rounded-lg overflow-hidden hidden">
+    <!-- Header -->
+    <div class="chat-header bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-between p-3">
+      <div class="flex items-center">
+        <img src="me.jpg" alt="Assistant" class="w-8 h-8 rounded-full mr-2">
+        <span class="font-bold">Assistant</span>
       </div>
-      <button onclick="toggleChatbot()">✖</button>
+      <button onclick="toggleChatbot()" class="text-xl font-bold">&times;</button>
     </div>
-    <div id="chatbot-messages"></div>
-    <div id="chatbot-input">
-      <input type="text" id="chatbot-text" placeholder="Type a message...">
-      <button onclick="sendMessage()">Send</button>
+
+    <!-- Messages -->
+    <div id="chat-messages" class="h-64 overflow-y-auto p-3 space-y-2 text-sm"></div>
+
+    <!-- Input -->
+    <div class="flex border-t">
+      <input id="user-input" type="text" placeholder="Type a message..." 
+             class="flex-1 p-2 outline-none text-sm">
+      <button onclick="sendMessage()" class="bg-blue-600 text-white px-4">Send</button>
     </div>
   </div>
 
+  <!-- Toggle Button -->
+  <button onclick="toggleChatbot()" 
+          class="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition">
+    💬
+  </button>
+
+  <!-- Chatbot Script -->
   <script>
-    const chatbot = document.getElementById("chatbot");
-    const messages = document.getElementById("chatbot-messages");
+  function toggleChatbot() {
+      const chatbot = document.getElementById("chatbot");
+      chatbot.classList.toggle("hidden");
 
-    function toggleChatbot() {
-      chatbot.style.display = chatbot.style.display === "flex" ? "none" : "flex";
-    }
+      // Auto greeting when opened
+      if (!chatbot.classList.contains("hidden") && !document.getElementById("chat-messages").hasChildNodes()) {
+          addMessage("Assistant", "👋 Hello! I'm your Assistant. You can ask me about my Resume, Projects, Services, or Contact info.");
+      }
+  }
 
-    function sendMessage() {
-      const input = document.getElementById("chatbot-text");
-      const msg = input.value.trim();
-      if (!msg) return;
+  function sendMessage() {
+      const inputField = document.getElementById("user-input");
+      const message = inputField.value.trim();
+      if (message === "") return;
 
-      // User message
-      messages.innerHTML += `<div class="mb-2"><strong>You:</strong> ${msg}</div>`;
-      input.value = "";
+      addMessage("You", message);
+      inputField.value = "";
 
-      // Smarter bot replies
-      let reply = "";
-      const lower = msg.toLowerCase();
+      setTimeout(() => {
+          const botReply = getBotResponse(message);
+          addMessage("Assistant", botReply);
+      }, 600);
+  }
 
-      if (lower.includes("hello") || lower.includes("hi")) {
-        reply = "👋 Hello! I'm your Assistant. How can I help you today?";
-      }
-      else if (lower.includes("email")) {
-        reply = "📧 You can email me at: <a href='mailto:nqwabena7@gmail.com' class='text-blue-600 underline'>nqwabena7@gmail.com</a>";
-      }
-      else if (lower.includes("resume") || lower.includes("cv")) {
-        reply = "📄 Here is my resume: <a href='resume.pdf' target='_blank' class='text-blue-600 underline'>Download Resume</a>";
-      }
-      else if (lower.includes("project")) {
-        reply = "💻 Some of my projects include: Inventory Management System, Network Diagnostic Tool, and my Portfolio Website.";
-      }
-      else if (lower.includes("service") || lower.includes("offer")) {
-        reply = "⚡ I offer services in Networking, Database Development, and Full Stack Web Development.";
-      }
-      else if (lower.includes("contact")) {
-        reply = "📞 You can contact me via Email or WhatsApp directly from this site.";
-      }
-      else {
-        reply = "🤖 I'm not sure about that, but you can ask me about my Email, Resume, Projects, Services, or Contact info.";
+  function addMessage(sender, text) {
+      const messagesDiv = document.getElementById("chat-messages");
+      const msgDiv = document.createElement("div");
+
+      if (sender === "You") {
+          msgDiv.className = "text-right";
+          msgDiv.innerHTML = `<p class="bg-gray-200 inline-block px-3 py-2 rounded-lg">${text}</p>`;
+      } else {
+          msgDiv.className = "text-left";
+          msgDiv.innerHTML = `<p class="bg-blue-100 inline-block px-3 py-2 rounded-lg"><strong>${sender}:</strong> ${text}</p>`;
       }
 
-      messages.innerHTML += `<div class="mb-2 text-blue-600"><strong>Assistant:</strong> ${reply}</div>`;
-      messages.scrollTop = messages.scrollHeight;
-    }
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function getBotResponse(input) {
+      input = input.toLowerCase();
+
+      if (input.includes("hi") || input.includes("hello")) {
+          return "👋 Hi there! How can I help you today?";
+      }
+      if (input.includes("contract") || input.includes("hire")) {
+          return "📄 Great! Please reach out via my Email or Contact form so we can discuss details.";
+      }
+      if (input.includes("resume") || input.includes("cv")) {
+          return "📑 You can download my resume here: <a href='resume.pdf' target='_blank' class='text-blue-500 underline'>Download Resume</a>";
+      }
+      if (input.includes("project")) {
+          return "💻 I’ve built Networking, Database, and Fullstack projects. You can check them in the Projects section.";
+      }
+      if (input.includes("service") || input.includes("offer")) {
+          return "⚡ I provide Networking, Database Development, and Fullstack Web solutions.";
+      }
+      if (input.includes("email")) {
+          return "📧 You can reach me at <a href='mailto:nqwabena7@gmail.com' class='text-blue-500 underline'>nqwabena7@gmail.com</a>";
+      }
+
+      return "🤖 I'm not sure about that, but you can ask me about Resume, Projects, Services, or Contact info.";
+  }
   </script>
+
 </body>
 </html>
