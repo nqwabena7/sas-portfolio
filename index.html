@@ -13,26 +13,27 @@
 
   <!-- ===== Hero Section ===== -->
   <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-28 md:py-36">
-    <div class="container mx-auto flex flex-col md:flex-row items-center px-8 md:px-16">
-      <div class="flex-1 text-center md:text-left">
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-6">
+    <div class="container mx-auto flex flex-col md:flex-row items-center px-8 md:px-16 gap-10">
+      <div class="flex-1 text-center md:text-left space-y-6">
+        <h1 class="text-5xl md:text-6xl font-extrabold">
           Hello, I'm <span class="text-yellow-300">Timothy Sasu Kwabena</span>
         </h1>
-        <p class="text-xl md:text-2xl mb-8 opacity-90">
+        <p class="text-xl md:text-2xl opacity-90">
           Network Engineer | Database Developer | Full Stack Developer
         </p>
-        <div class="space-x-4">
+        <div class="flex flex-wrap justify-center md:justify-start gap-4">
           <a href="#about" class="bg-white text-blue-600 px-8 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition">ℹ️ About</a>
           <a href="resume.pdf" class="bg-white text-blue-600 px-8 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition">📄 Resume</a>
           <a href="https://wa.me/233598324814" target="_blank" class="bg-green-500 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-green-600 transition">💬 WhatsApp</a>
         </div>
       </div>
-      <!-- Profile Image -->
-<div class="flex justify-center lg:justify-end mt-8 lg:mt-0">
-  <img src="me.jpg" alt="Profile Photo"
-       class="w-64 h-64 rounded-full object-cover border-4 border-white shadow-xl">
-</div>
 
+      <!-- Profile Image -->
+      <div class="flex justify-center lg:justify-end">
+        <img src="me.jpg" alt="Profile Photo"
+             class="w-72 h-72 rounded-full object-cover border-4 border-white shadow-2xl">
+      </div>
+    </div>
   </header>
 
   <!-- ===== About Section ===== -->
@@ -127,7 +128,10 @@
         <img src="me.jpg" alt="Assistant" class="w-8 h-8 rounded-full mr-2">
         <span class="font-bold">Assistant</span>
       </div>
-      <button onclick="toggleChatbot()" class="text-xl font-bold">&times;</button>
+      <div class="space-x-3">
+        <button onclick="refreshChatbot()" title="Refresh Chat" class="text-sm font-bold">⟳</button>
+        <button onclick="toggleChatbot()" class="text-xl font-bold">&times;</button>
+      </div>
     </div>
 
     <!-- Messages -->
@@ -156,6 +160,12 @@
       if (!chatbot.classList.contains("hidden") && !document.getElementById("chat-messages").hasChildNodes()) {
           addMessage("Assistant", "👋 Hello! I'm your Assistant. You can ask me about my Resume, Projects, Services, or Contact info.");
       }
+  }
+
+  function refreshChatbot() {
+      const messagesDiv = document.getElementById("chat-messages");
+      messagesDiv.innerHTML = "";
+      addMessage("Assistant", "🔄 Chat refreshed! How can I help you today?");
   }
 
   function sendMessage() {
@@ -225,5 +235,3 @@
 
 </body>
 </html>
-
-
